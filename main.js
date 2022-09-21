@@ -1,4 +1,3 @@
-
 const prompt = require('prompt-sync')({ sigint: true });
 
 const hat = '^';
@@ -11,46 +10,68 @@ class Field {
     this.field = field;
     this.x = 0;
     this.y = 0;
+    this.playing = true;
   }
+
   print() {
     console.log(this.field.map((ele) => {
       return ele.join('')
     }).join('\n')
     )
   }
-  gameStart() {
-    this.print();
-    let playing = true;
-    while(playing){
-      this.askQuestions();
-    }
-    
-  }
-  askQuestions(){
-    const move = prompt('which way would you like to move? (u means up, d means down, l means left and r means right)').toLowerCase();
-    if (move === 'd') {
-      this.x++;
-      this.locatePathCharacter()
-      this.print()
-    } else if(move==='u'){
-      this.x--;
-      this.locatePathCharacter();
-      this.print();
-    } else if(move==='l'){
-      this.y --;
-      this.locatePathCharacter();
-      this.print();
-    } else if (move === 'r'){
-      this.y ++;
-      this.locatePathCharacter();
-      this.print();
-    }
-  }
-  locatePathCharacter(){
+
+  locatePathCharacter() {
     return this.field[this.x][this.y] = pathCharacter;
   }
-}
 
+  isHat() {
+    return this.field[this.x][this.y] == hat;
+  }
+
+  isHole() {
+    return this.field[this.x][this.y] == hole;
+  }
+
+  isOutside() {
+    return this.x < 0 || this.y < 0 || this.x > this.field.length || this.y > this.field[0].length;
+  }
+
+  askQuestions() {
+    const move = prompt('which way would you like to move? (u means up, d means down, l means left and r means right)').toLowerCase();
+    if (move === 'd') {
+      return this.x++;
+    } else if (move === 'u') {
+      return this.x--;
+    } else if (move === 'l') {
+      return this.y--;
+    } else if (move === 'r') {
+      return this.y++;
+    }
+  }
+
+  checkLocation() {
+    if (this.isOutside()) {
+      console.log('Game Over! You\'re outside of the field!');
+      this.playing = false;
+    } else if (this.isHole()) {
+      console.log('Game Over! You dropped in a hole!');
+      this.playing = false;
+    } else if (this.isHat()) {
+      console.log('Congratulatin! You found the hat!');
+      this.playing = false;
+    } else {
+      this.locatePathCharacter();
+    }
+  }
+
+  gameStart() {
+    while (this.playing) {
+      this.print();
+      this.askQuestions();
+      this.checkLocation();
+    }
+  }
+}
 const myField = new Field([
   ['*', '░', 'O', '░', 'O', '░', 'O', '░'],
   ['░', '░', '░', '░', '░', 'O', 'O', '░'],
@@ -61,4 +82,5 @@ const myField = new Field([
 
 
 myField.gameStart();
+
 
