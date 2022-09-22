@@ -6,10 +6,10 @@ const fieldCharacter = '░';
 const pathCharacter = '*';
 
 class Field {
-  constructor(arr) {
-    this.field = arr[0];
-    this.x = arr[1];
-    this.y = arr[2];
+  constructor(obj) {
+    this.field = obj.field;
+    this.x = obj.pathLocation.pathX;
+    this.y = obj.pathLocation.pathY;
     this.playing = true;
   }
 
@@ -114,11 +114,9 @@ class Field {
 
     field[hatLocation.hatY][hatLocation.hatX] = hat;
     field[pathLocation.pathY][pathLocation.pathX] = pathCharacter;
-    this.x = [pathLocation.pathX];
-    this.y = [pathLocation.pathY];
     // field[0][0] = pathCharacter;
-    const arr = [field, pathLocation.pathX, pathLocation.pathY]
-    return arr;
+    
+    return {field, pathLocation};
   }
 }
 const myField = new Field(Field.generateField(10, 10, 0.1))
